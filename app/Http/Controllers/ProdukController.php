@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use App\Models\Produk;
-use PDF;
 
 class ProdukController extends Controller
 {
