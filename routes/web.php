@@ -32,9 +32,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/register', function () {
-    return view('/auth/register');
-});
+
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

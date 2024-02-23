@@ -74,28 +74,34 @@ class PenjualanController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $penjualan = Penjualan::findOrFail($request->id_penjualan);
-        $penjualan->id_member = $request->id_member;
-        $penjualan->total_item = $request->total_item;
-        $penjualan->total_harga = $request->total;
-        $penjualan->diskon = $request->diskon;
-        $penjualan->bayar = $request->bayar;
-        $penjualan->diterima = $request->diterima;
-        $penjualan->update();
+{
+    $penjualan = Penjualan::findOrFail($request->id_penjualan);
+    $penjualan->id_member = $request->id_member;
+    $penjualan->total_item = $request->total_item;
+    $penjualan->total_harga = $request->total;
+    $penjualan->diskon = $request->diskon;
+    $penjualan->bayar = $request->bayar;
+    $penjualan->diterima = $request->diterima;
 
-        $detail = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();
-        foreach ($detail as $item) {
-            $item->diskon = $request->diskon;
-            $item->update();
-
-            $produk = Produk::find($item->id_produk);
-            $produk->stok -= $item->jumlah;
-            $produk->update();
-        }
-
-        return redirect()->route('transaksi.selesai');
+    // Check if the amount received is less than the total amount to be paid
+    if ($penjualan->diterima < $penjualan->bayar) {
+        return redirect()->back()->with('error', 'Amount received cannot be less than the total amount to be paid.');
     }
+
+    $penjualan->update();
+
+    $detail = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();
+    foreach ($detail as $item) {
+        $item->diskon = $request->diskon;
+        $item->update();
+
+        $produk = Produk::find($item->id_produk);
+        $produk->stok -= $item->jumlah;
+        $produk->update();
+    }
+
+    return redirect()->route('transaksi.selesai');
+}
 
     public function show($id)
     {

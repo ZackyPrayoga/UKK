@@ -7,60 +7,52 @@
     <title>Cetak Kartu Member</title>
 
     <style>
-        .box {
-            position: relative;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        section {
+            border: 2px solid #000;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
         }
         .card {
-            width: 85.60mm;
-        }
-        .logo {
-            position: absolute;
-            top: 3pt;
-            right: 0pt;
-            font-size: 16pt;
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: bold;
-            color: #fff !important;
-        }
-        .logo p {
-            text-align: right;
-            margin-right: 16pt;
+            width: calc(100% - 40px); /* Adjusted width to consider padding */
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.1);
+            position: relative;
+            margin-left: auto; /* Center the card */
+            margin-right: auto; /* Center the card */
         }
         .logo img {
-            position: absolute;
-            margin-top: -5pt;
-            width: 40px;
-            height: 40px;
-            right: 16pt;
+            width: 80px;
+            height: auto;
+            margin-bottom: 10px;
         }
-        .nama {
-            position: absolute;
-            top: 100pt;
-            right: 16pt;
-            font-size: 12pt;
-            font-family: Arial, Helvetica, sans-serif;
+        .logo p {
+            font-size: 20px;
             font-weight: bold;
-            color: #fff !important;
+            margin: 0;
+            color: #333;
         }
-        .telepon {
-            position: absolute;
-            margin-top: 120pt;
-            right: 16pt;
-            color: #fff;
+        .nama, .telepon {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
         }
-        .barcode {
-            position: absolute;
-            top: 105pt;
-            left: .860rem;
-            border: 1px solid #fff;
-            padding: .5px;
-            background: #fff;
-        }
-        .text-left {
-            text-align: left;
-        }
-        .text-right {
-            text-align: right;
+        .barcode img {
+            width: 100px;
+            height: auto;
         }
         .text-center {
             text-align: center;
@@ -68,35 +60,22 @@
     </style>
 </head>
 <body>
-    <section style="border: 1px solid #fff">
-        <table width="100%">
-            @foreach ($datamember as $key => $data)
-                <tr>
-                    @foreach ($data as $item)
-                        <td class="text-center">
-                            <div class="box">
-                                <img src="{{ public_path($setting->path_kartu_member) }}" alt="card" width="50%">
-                                <div class="logo">
-                                    <p>{{ $setting->nama_perusahaan }}</p>
-                                    <img src="{{ public_path($setting->path_logo) }}" alt="logo">
-                                </div>
-                                <div class="nama">{{ $item->nama }}</div>
-                                <div class="telepon">{{ $item->telepon }}</div>
-                                <div class="barcode text-left">
-                                    <img src="data:image/png;base64, {{ DNS2D::getBarcodePNG("$item->kode_member", 'QRCODE') }}" alt="qrcode"
-                                        height="45"
-                                        widht="45">
-                                </div>
-                            </div>
-                        </td>
-                        
-                        @if (count($datamember) == 1)
-                        <td class="text-center" style="width: 50%;"></td>
-                        @endif
-                    @endforeach
-                </tr>
+    <section>
+        @foreach ($datamember as $key => $data)
+            @foreach ($data as $item)
+                <div class="card">
+                    <div class="logo text-center">
+                        <img src="{{ public_path($setting->path_logo) }}" alt="logo">
+                        <p>{{ $setting->nama_perusahaan }}</p>
+                    </div>
+                    <div class="nama"><strong>Nama : </strong>{{ $item->nama }}</div>
+                    <div class="telepon"><strong>Telepon: </strong>{{ $item->telepon }}</div>
+                    <div class="barcode text-center">
+                        <img src="data:image/png;base64, {{ DNS2D::getBarcodePNG("$item->kode_member", 'QRCODE') }}" alt="qrcode">
+                    </div>
+                </div>
             @endforeach
-        </table>
+        @endforeach
     </section>
 </body>
 </html>

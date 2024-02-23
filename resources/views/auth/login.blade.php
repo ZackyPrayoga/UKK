@@ -38,11 +38,6 @@
                             <input type="checkbox"> Ingat Saya
                         </label>
                     </div>
-                    <div>
-                        <label >
-                            <a href="/register">Belum Punya Akun?</a>
-                        </label>
-                    </div>
                 </div>
                 <!-- /.col -->
                 <div class="col-xs-4">
