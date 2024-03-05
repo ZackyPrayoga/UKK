@@ -74,35 +74,43 @@ class PenjualanController extends Controller
     }
 
     public function store(Request $request)
-{
-    $penjualan = Penjualan::findOrFail($request->id_penjualan);
-    $penjualan->id_member = $request->id_member;
-    $penjualan->total_item = $request->total_item;
-    $penjualan->total_harga = $request->total;
-    $penjualan->diskon = $request->diskon;
-    $penjualan->bayar = $request->bayar;
-    $penjualan->diterima = $request->diterima;
-
-    // Check if the amount received is less than the total amount to be paid
-    if ($penjualan->diterima < $penjualan->bayar) {
-        return redirect()->back()->with('error', 'Amount received cannot be less than the total amount to be paid.');
+    {
+        $penjualan = Penjualan::findOrFail($request->id_penjualan);
+    
+        // Check if any product in the sale has zero or negative stock
+        $detail = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();
+        foreach ($detail as $item) {
+            $produk = $item->produk; // Assuming there's a relationship named 'produk' in PenjualanDetail model
+            if ($produk->stok <= 0) {
+                return back()->with('error', 'Product "' . $produk->nama_produk . '" is out of stock.');
+            }
+        }
+    
+        // Update the sale details
+        $penjualan->id_member = $request->id_member;
+        $penjualan->total_item = $request->total_item;
+        $penjualan->total_harga = $request->total;
+        $penjualan->diskon = $request->diskon;
+        $penjualan->bayar = $request->bayar;
+        $penjualan->diterima = $request->diterima;
+    
+        // Check if the amount received is less than the total amount to be paid
+        if ($penjualan->diterima < $penjualan->bayar) {
+            return back()->with('error', 'Amount received cannot be less than the total amount to be paid.');
+        }
+    
+        $penjualan->update();
+    
+        // Reduce stock for each product sold
+        foreach ($detail as $item) {
+            $produk = $item->produk;
+            $produk->stok -= $item->jumlah;
+            $produk->update();
+        }
+    
+        return redirect()->route('transaksi.selesai')->with('success', 'Sale successfully completed.');
     }
-
-    $penjualan->update();
-
-    $detail = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();
-    foreach ($detail as $item) {
-        $item->diskon = $request->diskon;
-        $item->update();
-
-        $produk = Produk::find($item->id_produk);
-        $produk->stok -= $item->jumlah;
-        $produk->update();
-    }
-
-    return redirect()->route('transaksi.selesai');
-}
-
+    
     public function show($id)
     {
         $detail = PenjualanDetail::with('produk')->where('id_penjualan', $id)->get();
