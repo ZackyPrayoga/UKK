@@ -18,20 +18,86 @@
     <!-- iCheck -->
     <link rel="stylesheet" href="{{ asset('AdminLTE-2/plugins/iCheck/square/blue.css') }}">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
-
     <!-- Google Font -->
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-color: #f9f9f9; /* Set a background color for the body */
+        }
+        .login-box {
+            margin-top: 100px; /* Adjust the margin for the login box */
+        }
+        .login-logo img {
+            display: block;
+            margin: 0 auto;
+            width: 150px; /* Adjust the width of the logo */
+        }
+        .login-box-body {
+            background-color: #fff; /* Set a background color for the login box body */
+            border-radius: 5px; /* Add some border radius to make it visually appealing */
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+        }
+        .login-box-body .form-login {
+            margin-top: 20px; /* Adjust the margin for the form */
+        }
+        .help-block {
+            color: #a94442; /* Set the error message color */
+        }
+    </style>
 </head>
 <body class="hold-transition login-page">
     
-    @yield('login')
+    <div class="login-box">
+        <!-- /.login-logo -->
+        <div class="login-box-body">
+            <div class="login-logo">
+                <a href="{{ url('/') }}">
+                    <img src="{{ url($setting->path_logo) }}" alt="logo.png">
+                </a>
+            </div>
+
+            <form action="{{ route('login') }}" method="post" class="form-login">
+                @csrf
+                <div class="form-group has-feedback @error('email') has-error @enderror">
+                    <input type="email" name="email" class="form-control" placeholder="Email" required value="{{ old('email') }}" autofocus>
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                    @error('email')
+                        <span class="help-block">{{ $message }}</span>
+                    @else
+                    <span class="help-block with-errors"></span>
+                    @enderror
+                </div>
+                <div class="form-group has-feedback @error('password') has-error @enderror">
+                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                    @error('password')
+                        <span class="help-block">{{ $message }}</span>
+                    @else
+                        <span class="help-block with-errors"></span>
+                    @enderror
+                </div>
+                <div class="row">
+                    <div class="col-xs-8">
+                        <div class="checkbox icheck">
+                            <label>
+                                <input type="checkbox"> Remember Me
+                            </label>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-xs-4">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+                    </div>
+                    <!-- /.col -->
+                </div>
+            </form>
+        </div>
+        <!-- /.login-box-body -->
+    </div>
+    <!-- /.login-box -->
 
     <!-- jQuery 3 -->
     <script src="{{ asset('AdminLTE-2/bower_components/jquery/dist/jquery.min.js') }}"></script>
