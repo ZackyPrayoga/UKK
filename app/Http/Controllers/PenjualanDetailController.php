@@ -90,7 +90,8 @@ class PenjualanDetailController extends Controller
         $detail->harga_jual = $produk->harga_jual;
         $detail->jumlah = 1;
         $detail->diskon = $produk->diskon;
-        $detail->subtotal = $produk->harga_jual - ($produk->diskon / 100 * $produk->harga_jual);;
+        $detail->subtotal = $produk->harga_jual - ($produk->diskon / 100 * $produk->harga_jual);
+        
         $detail->save();
 
         return response()->json('Data berhasil disimpan', 200);

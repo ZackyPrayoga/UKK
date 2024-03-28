@@ -55,23 +55,10 @@ class PengeluaranController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the request data
-        $validatedData = $request->validate([
-            'nominal' => 'required|numeric|min:0', // Adjust 'nominal' to the actual field name
-            // Add other validation rules as needed for other fields
-        ]);
-    
-        // Check if the validated data meets your criteria
-        if ($validatedData['nominal'] <= 0) {
-            return response()->json('Nilai harus lebih dari 0', 422); // Return a validation error response
-        }
-    
-        // If validation passes, create the record
-        $pengeluaran = Pengeluaran::create($validatedData);
-    
+        $pengeluaran = Pengeluaran::create($request->all());
+
         return response()->json('Data berhasil disimpan', 200);
     }
-    
 
     /**
      * Display the specified resource.

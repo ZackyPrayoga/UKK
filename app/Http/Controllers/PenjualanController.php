@@ -37,7 +37,7 @@ class PenjualanController extends Controller
             })
             ->addColumn('kode_member', function ($penjualan) {
                 $member = $penjualan->member->kode_member ?? '';
-                return '<span class="label label-success">'. $member .'</spa>';
+                return '<span class="label label-success">'. $member .'</span>';
             })
             ->editColumn('diskon', function ($penjualan) {
                 return $penjualan->diskon . '%';
@@ -76,7 +76,12 @@ class PenjualanController extends Controller
     public function store(Request $request)
     {
         $penjualan = Penjualan::findOrFail($request->id_penjualan);
-    
+
+        // Check if all required fields are filled
+        if (!$request->filled([ 'total_item', 'total', 'bayar', 'diterima'])) {
+            return back()->with('error', 'Please fill all required fields.');
+        }
+
         // Check if any product in the sale has zero or negative stock
         $detail = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();
         foreach ($detail as $item) {
@@ -85,7 +90,7 @@ class PenjualanController extends Controller
                 return back()->with('error', 'Product "' . $produk->nama_produk . '" is out of stock.');
             }
         }
-    
+
         // Update the sale details
         $penjualan->id_member = $request->id_member;
         $penjualan->total_item = $request->total_item;
@@ -93,24 +98,26 @@ class PenjualanController extends Controller
         $penjualan->diskon = $request->diskon;
         $penjualan->bayar = $request->bayar;
         $penjualan->diterima = $request->diterima;
-    
-        // Check if the amount received is less than the total amount to be paid
-        if ($penjualan->diterima < $penjualan->bayar) {
-            return back()->with('error', 'Amount received cannot be less than the total amount to be paid.');
-        }
-    
-        $penjualan->update();
-    
+
         // Reduce stock for each product sold
         foreach ($detail as $item) {
             $produk = $item->produk;
             $produk->stok -= $item->jumlah;
             $produk->update();
         }
-    
+
+        // Check if the amount received is less than the total amount to be paid
+        if ($penjualan->diterima < $penjualan->bayar) {
+            return back()->with('error', 'Amount received cannot be less than the total amount to be paid.');
+        }
+
+        // Save the sale
+        $penjualan->update();
+
+        // Redirect to the completion page
         return redirect()->route('transaksi.selesai')->with('success', 'Sale successfully completed.');
     }
-    
+
     public function show($id)
     {
         $detail = PenjualanDetail::with('produk')->where('id_penjualan', $id)->get();
