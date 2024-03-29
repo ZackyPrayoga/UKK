@@ -25,23 +25,45 @@
     <style>
         body {
             background-color: #f9f9f9; /* Set a background color for the body */
+            font-family: 'Source Sans Pro', sans-serif; /* Use Google font for better readability */
         }
         .login-box {
-            margin-top: 100px; /* Adjust the margin for the login box */
+            margin-top: 80px; /* Adjust the margin for the login box */
+            width: 360px; /* Set a fixed width for the login box */
+            margin: 80px auto; /* Center the login box horizontally */
+            padding: 20px; /* Add some padding for better spacing */
+            background-color: #ffffff; /* Set a background color for the login box */
+            border-radius: 10px; /* Add some border radius to make it visually appealing */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
         }
         .login-logo img {
             display: block;
             margin: 0 auto;
-            width: 150px; /* Adjust the width of the logo */
+            width: 200px; /* Adjust the width of the logo */
         }
         .login-box-body {
-            background-color: #fff; /* Set a background color for the login box body */
-            border-radius: 5px; /* Add some border radius to make it visually appealing */
             padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
         }
-        .login-box-body .form-login {
-            margin-top: 20px; /* Adjust the margin for the form */
+        .form-login input[type="email"],
+        .form-login input[type="password"] {
+            width: 100%; /* Make input fields fill the container */
+            padding: 12px; /* Add padding for better spacing */
+            margin-bottom: 20px; /* Add some space between input fields */
+            border: 1px solid #ccc; /* Add a border for input fields */
+            border-radius: 5px; /* Add some border radius */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+        .form-login button[type="submit"] {
+            width: 100%; /* Make submit button fill the container */
+            padding: 12px; /* Add padding for better spacing */
+            border: none; /* Remove default button border */
+            background-color: #007bff; /* Set a background color for the button */
+            color: #ffffff; /* Set text color for better contrast */
+            border-radius: 5px; /* Add some border radius */
+            cursor: pointer; /* Change cursor to pointer on hover */
+        }
+        .form-login button[type="submit"]:hover {
+            background-color: #0056b3; /* Darken the background color on hover */
         }
         .help-block {
             color: #a94442; /* Set the error message color */
@@ -67,7 +89,7 @@
                     @error('email')
                         <span class="help-block">{{ $message }}</span>
                     @else
-                    <span class="help-block with-errors"></span>
+                        <span class="help-block with-errors"></span>
                     @enderror
                 </div>
                 <div class="form-group has-feedback @error('password') has-error @enderror">
@@ -81,7 +103,7 @@
                 </div>
                 <div class="row">
                     <!-- /.col -->
-                    <div class="col-xs-4">
+                    <div class="col-xs-12">
                         <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
                     </div>
                     <!-- /.col -->
